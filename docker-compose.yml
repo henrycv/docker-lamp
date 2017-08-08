@@ -1,0 +1,29 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: "3.1"
+services:
+
+    mysql:
+      image: mysql:8.0
+      container_name: docker-lamp-mysql
+      working_dir: /application
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=test
+        - MYSQL_USER=root
+        - MYSQL_PASSWORD=root
+
+    php:
+      build:
+        context: .
+        dockerfile: php/Dockerfile
+      container_name: docker-lamp-php
+      working_dir: /almundo-lamp
+      volumes:
+        - /var/www/html:/var/www/html
+        - .:/almundo-lamp
+      links:
+        - mysql
+      ports:
+        - "80"
