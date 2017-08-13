@@ -7,7 +7,7 @@ services:
     mysql:
       image: mysql:8.0
       container_name: docker-lamp-mysql
-      working_dir: /application
+      working_dir: /docker-lamp-mysql
       environment:
         - MYSQL_ROOT_PASSWORD=root
         - MYSQL_DATABASE=test
@@ -19,10 +19,10 @@ services:
         context: .
         dockerfile: php/Dockerfile
       container_name: docker-lamp-php
-      working_dir: /almundo-lamp
+      working_dir: /docker-lamp
       volumes:
         - /var/www/html:/var/www/html
-        - .:/almundo-lamp
+        - .:/docker-lamp
       links:
         - mysql
       ports:

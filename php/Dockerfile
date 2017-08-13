@@ -22,8 +22,6 @@ RUN apt-get -y install \
     curl \
     # Install Wget package for testing tasks
     wget \
-    # Install Vim editor
-    vim \
     # Install PHP XSL
     php5-xsl \
     # Install PHP XMLRPC
@@ -40,21 +38,24 @@ RUN apt-get -y install \
     php-apc \
     # Install PHP Mcrypt
     php5-mcrypt \
-    # Install MySQLI extension
-    php5-mysqli \
     # Install MySQL extension
-    php5-mysqlnd \
+    php5-mysql \
     # Install PHP XDebug
     php5-xdebug \
-    # # Install NodeJS
-    nodejs \
-    # Install NPM
-    npm
+    # # # Install NodeJS
+    # nodejs \
+    # # Install NPM
+    # npm \
+    # Install Vim editor
+    vim
 
-# # Enable Apache mod rewrite
+# Enable MySQL extensions
+RUN docker-php-ext-install mysql mysqli pdo pdo_mysql
+
+# Enable Apache mod rewrite
 RUN a2enmod rewrite
 
-# # Enabling module expires.
+# Enabling module expires.
 RUN a2enmod file_cache
 RUN a2enmod expires
 RUN a2enmod headers
@@ -89,3 +90,6 @@ RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/lo
 # Install PHP Symfony framework tool globally
 RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony
 RUN chmod a+x /usr/local/bin/symfony
+
+# Load "php.ini" on Development environment
+RUN cp /usr/share/php5/php.ini-development /usr/local/etc/php/php.ini
