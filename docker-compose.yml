@@ -1,29 +1,53 @@
-###############################################################################
-#                          Generated on phpdocker.io                          #
-###############################################################################
 version: "3.1"
 services:
 
-    mysql:
-      image: mysql:8.0
-      container_name: docker-lamp-mysql
-      working_dir: /docker-lamp-mysql
-      environment:
-        - MYSQL_ROOT_PASSWORD=root
-        - MYSQL_DATABASE=test
-        - MYSQL_USER=root
-        - MYSQL_PASSWORD=root
+  mysql:
+    image: mysql:5.6
+    container_name: docker-lamp-mysql
+    # working_dir: /docker-lamp
+    environment:
+      # - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=test
+      - MYSQL_PASSWORD=root
+    ports:
+      - "3306:3306"
+    networks:
+      - docker-lamp-net
 
-    php:
-      build:
-        context: .
-        dockerfile: php/Dockerfile
-      container_name: docker-lamp-php
-      working_dir: /docker-lamp
-      volumes:
-        - /var/www/html:/var/www/html
-        - .:/docker-lamp
-      links:
-        - mysql
-      ports:
-        - "80"
+  node:
+    image: "node:8"
+    container_name: docker-lamp-node
+    # working_dir: /docker-lamp
+    environment:
+      # - NODE_ENV=production
+      - NODE_ENV=development
+    # volumes:
+    #   - ./:/usr/src/app
+    expose:
+      - "8080"
+    networks:
+      - docker-lamp-net
+
+  php:
+    build:
+      context: .
+      dockerfile: php/Dockerfile
+    container_name: docker-lamp-php
+    volumes:
+      - /var/www/html:/var/www/html
+      - .:/docker-lamp
+    working_dir: /docker-lamp
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - mysql
+      - node
+    restart: always
+    networks:
+      - docker-lamp-net
+
+networks:
+  docker-lamp-net:
+    driver: bridge
